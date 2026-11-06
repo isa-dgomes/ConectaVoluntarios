@@ -1,5 +1,4 @@
 package br.com.conectavoluntario.entity;
-//anotacao de ajuda
 import jakarta.persistence.*;
 
 @Entity
