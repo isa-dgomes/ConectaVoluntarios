@@ -14,18 +14,23 @@ public class Voluntario extends Usuario{
 	
 	private String habilidades;
 	
-	@ManyToMany
+	//manytomany aqui por que usa entidade de banco,
+	
+	@ManyToMany																 
 	@JoinTable(
 			name="voluntario_area_interesse",
-			joinColumns = @JoinColumn(name = "id_usuario"),
+			joinColumns = @JoinColumn(name = "id_voluntario"),
 			inverseJoinColumns = @JoinColumn(name= "id_area_atuacao")
 			)
 	private List<AreaAtuacao> areasDeInteresse = new ArrayList<>();
 	
+	
+	//elementcollection pois usa enums
+	
 	@ElementCollection
 	@CollectionTable(
 		name = "voluntario_disponibilidade",
-		joinColumns = @JoinColumn(name="id_usuario")
+		joinColumns = @JoinColumn(name="id_voluntario")
 			)
 	@Enumerated(EnumType.STRING)
 	@Column(name ="dia_semana")
@@ -34,7 +39,7 @@ public class Voluntario extends Usuario{
 	@ElementCollection
 	@CollectionTable(
 		name= "voluntario_periodo",
-		joinColumns = @JoinColumn(name = "periodo")
+		joinColumns = @JoinColumn(name = "id_voluntario")
 			)
 	@Enumerated(EnumType.STRING)
 	@Column(name = "periodo")

@@ -1,8 +1,17 @@
 package br.com.conectavoluntario.entity;
 
+import jakarta.persistence.*;
+
+@Entity
+@Table(name= "area_atuacao")
 public class AreaAtuacao {
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id_area_atuacao")
 	private Long idAreaAtuacao;
+	
+	@Column(name = "nome_area", nullable= false, unique= true)
 	private String nomeArea;
 	
 	
