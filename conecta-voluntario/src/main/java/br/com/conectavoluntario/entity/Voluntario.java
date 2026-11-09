@@ -12,6 +12,7 @@ import jakarta.persistence.*;
 @PrimaryKeyJoinColumn(name = "id_usuario")
 public class Voluntario extends Usuario{
 	
+	@Column(name = "habilidades", columnDefinition = "TEXT")
 	private String habilidades;
 	
 	//manytomany aqui por que usa entidade de banco,
@@ -45,6 +46,7 @@ public class Voluntario extends Usuario{
 	@Column(name = "periodo")
 	private List<Periodo> periodo = new ArrayList<>();
 	
+	@Column(name = "experiencia", columnDefinition = "TEXT")
 	private String experiencia;
 	
 	

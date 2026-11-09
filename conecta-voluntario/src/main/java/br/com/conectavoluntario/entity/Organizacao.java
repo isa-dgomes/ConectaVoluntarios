@@ -16,7 +16,7 @@ public class Organizacao extends Usuario{
 	@Column(name = "cnpj", unique = true)
 	private String cnpj;
 	
-	@Column(name= "descricao", nullable= false)
+	@Column(name= "descricao", nullable= false, columnDefinition = "TEXT")
 	private String descricao;
 	
 	@Column(name= "tipo_organizacao")
@@ -24,6 +24,8 @@ public class Organizacao extends Usuario{
 	
 	@Column(name= "responsavel", nullable = false)
 	private String responsavel;
+	
+	@Column(name = "logo", columnDefinition = "TEXT")
 	private String logo;
 	
 	

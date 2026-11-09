@@ -19,12 +19,12 @@ public class Endereco {
 	private String logradouro;
 	
 	@Column(name = "numero", nullable = false)
-	private Integer numero;
+	private String numero;
 	
 	private String cep;
 	private String bairro;
 
-	public Endereco(Long idEndereco, String cidade, String estado, String logradouro, Integer numero, String cep,
+	public Endereco(Long idEndereco, String cidade, String estado, String logradouro, String numero, String cep,
 			String bairro) {
 		this.idEndereco = idEndereco;
 		this.cidade = cidade;
@@ -56,7 +56,7 @@ public class Endereco {
 		return logradouro;
 	}
 
-	public Integer getNumero() {
+	public String getNumero() {
 		return numero;
 	}
 
@@ -85,7 +85,7 @@ public class Endereco {
 		this.logradouro = logradouro;
 	}
 
-	public void setNumero(Integer numero) {
+	public void setNumero(String numero) {
 		this.numero = numero;
 	}
 
