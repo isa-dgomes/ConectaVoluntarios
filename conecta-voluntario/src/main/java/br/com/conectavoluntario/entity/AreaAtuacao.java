@@ -44,5 +44,18 @@ public class AreaAtuacao {
 	}
 	
 	
+	//METODOS
+	 @Override
+	   public boolean equals(Object o) {
+	       if (this == o) return true;
+	       if (!(o instanceof AreaAtuacao outra)) return false;
+	       return idAreaAtuacao != null && idAreaAtuacao.equals(outra.idAreaAtuacao);
+	   }
+
+	   @Override
+	   public int hashCode() {
+	       return getClass().hashCode();
+	   }
+	
 
 }

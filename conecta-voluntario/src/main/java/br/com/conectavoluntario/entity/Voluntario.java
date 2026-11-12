@@ -1,11 +1,12 @@
 package br.com.conectavoluntario.entity;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import br.com.conectavoluntario.enums.*;
 import jakarta.persistence.*;
+
 
 @Entity
 @Table(name = "voluntario")
@@ -23,7 +24,7 @@ public class Voluntario extends Usuario{
 			joinColumns = @JoinColumn(name = "id_voluntario"),
 			inverseJoinColumns = @JoinColumn(name= "id_area_atuacao")
 			)
-	private List<AreaAtuacao> areasDeInteresse = new ArrayList<>();
+	private Set<AreaAtuacao> areasDeInteresse = new HashSet<>();
 	
 	
 	//elementcollection pois usa enums
@@ -35,7 +36,7 @@ public class Voluntario extends Usuario{
 			)
 	@Enumerated(EnumType.STRING)
 	@Column(name ="dia_semana")
-	private List<DiaSemana> disponibilidade = new ArrayList<>();
+	private Set<DiaSemana> disponibilidade = new HashSet<>();
 	
 	@ElementCollection
 	@CollectionTable(
@@ -44,7 +45,7 @@ public class Voluntario extends Usuario{
 			)
 	@Enumerated(EnumType.STRING)
 	@Column(name = "periodo")
-	private List<Periodo> periodo = new ArrayList<>();
+	private Set<Periodo> periodo = new HashSet<>();
 	
 	@Column(name = "experiencia", columnDefinition = "TEXT")
 	private String experiencia;
@@ -52,11 +53,11 @@ public class Voluntario extends Usuario{
 	
 	
 	public Voluntario( String nome,  String email, String senhaHash, 
-			String telefone, boolean aceitouTermos,Instant dataAceiteTermos, 
+			String telefone, boolean aceitouTermos, Instant dataAceiteTermos, 
 			Endereco endereco, String habilidades, 
-			List<AreaAtuacao> areasDeInteresse,
-			List<DiaSemana> disponibilidade,
-			List<Periodo> periodo, 
+			Set<AreaAtuacao> areasDeInteresse,
+			Set<DiaSemana> disponibilidade,
+			Set<Periodo> periodo, 
 			String experiencia) {
 		
 		super( nome, email, senhaHash, telefone, aceitouTermos, dataAceiteTermos, endereco);
@@ -76,15 +77,15 @@ public class Voluntario extends Usuario{
 		return habilidades;
 	}
 	
-	public List<AreaAtuacao> getAreasDeInteresse() {
+	public Set<AreaAtuacao> getAreasDeInteresse() {
 		return areasDeInteresse;
 	}
 	
-	public List<DiaSemana> getDisponibilidade() {
+	public Set<DiaSemana> getDisponibilidade() {
 		return disponibilidade;
 	}
 	
-	public List<Periodo> getPeriodo() {
+	public Set<Periodo> getPeriodo() {
 		return periodo;
 	}
 	
@@ -97,15 +98,15 @@ public class Voluntario extends Usuario{
 		this.habilidades = habilidades;
 	}
 	
-	public void setAreasDeInteresse(List<AreaAtuacao> areasDeInteresse) {
+	public void setAreasDeInteresse(Set<AreaAtuacao> areasDeInteresse) {
 		this.areasDeInteresse = areasDeInteresse;
 	}
 	
-	public void setDisponibilidade(List<DiaSemana> disponibilidade) {
+	public void setDisponibilidade(Set<DiaSemana> disponibilidade) {
 		this.disponibilidade = disponibilidade;
 	}
 	
-	public void setPeriodo(List<Periodo> periodo) {
+	public void setPeriodo(Set<Periodo> periodo) {
 		this.periodo = periodo;
 	}
 	
@@ -114,6 +115,8 @@ public class Voluntario extends Usuario{
 	}
 	
 	//METODOS
+	
+	  
 	
 	//adiciona e remove area de interesse da lista
 	public void adicionarAreaDeInteresse(AreaAtuacao area) {
