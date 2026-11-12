@@ -103,19 +103,19 @@ public class VoluntarioService {
 			
 	}
 	
-
-@Transactional(readOnly = true)
-public VoluntarioResponse consultarMeuPerfil(Long id) {
-
-    Voluntario voluntario = voluntarioRepository.findById(id)
-            .orElseThrow(() -> new RegrasDeNegocioException(
-                    "Voluntario nao encontrado"
-            ));
-
-    return voluntarioMapper.toResponse(voluntario);
-}
-
 	
+//METODO BUSCAR POR ID
+	@Transactional(readOnly = true)
+	public VoluntarioResponse buscarPorId(Long id) {
+		
+		Voluntario voluntario = voluntarioRepository.findById(id)
+				.orElseThrow(() -> new RuntimeException(
+                "Voluntario nao encontrado"
+        ));
+		
+		return voluntarioMapper.toResponse(voluntario);
+		
+	}
 	
 	
 	
