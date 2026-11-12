@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.com.conectavoluntario.dto.request.VoluntarioRequest;
 import br.com.conectavoluntario.dto.response.VoluntarioResponse;
@@ -18,7 +19,6 @@ import br.com.conectavoluntario.mapper.VoluntarioMapper;
 import br.com.conectavoluntario.repository.AreaAtuacaoRepository;
 import br.com.conectavoluntario.repository.UsuarioRepository;
 import br.com.conectavoluntario.repository.VoluntarioRepository;
-import jakarta.transaction.Transactional;
 
 @Service
 public class VoluntarioService {
@@ -103,6 +103,18 @@ public class VoluntarioService {
 			
 	}
 	
+
+@Transactional(readOnly = true)
+public VoluntarioResponse consultarMeuPerfil(Long id) {
+
+    Voluntario voluntario = voluntarioRepository.findById(id)
+            .orElseThrow(() -> new RegrasDeNegocioException(
+                    "Voluntario nao encontrado"
+            ));
+
+    return voluntarioMapper.toResponse(voluntario);
+}
+
 	
 	
 	

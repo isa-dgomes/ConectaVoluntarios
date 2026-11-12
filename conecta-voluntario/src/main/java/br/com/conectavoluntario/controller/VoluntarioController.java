@@ -29,5 +29,9 @@ public class VoluntarioController {
 		VoluntarioResponse resposta = voluntarioService.cadastrar(req);
 		return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
 	}
+	
+	
+
+
 
 }
