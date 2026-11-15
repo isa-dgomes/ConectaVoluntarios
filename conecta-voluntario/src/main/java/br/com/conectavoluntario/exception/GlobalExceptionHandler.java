@@ -1,6 +1,7 @@
 package br.com.conectavoluntario.exception;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(resposta);
     }
 
-
     // Trata erros de regras de negócio lançados pelo Service
     @ExceptionHandler(RegrasDeNegocioException.class)
     public ResponseEntity<ErroResposta> tratarErroRegraDeNegocio(
@@ -53,19 +53,25 @@ public class GlobalExceptionHandler {
                 .body(resposta);
     }
 
-
     // Estrutura padrão da resposta de erro
     public record ErroResposta(
             int status,
             String erro,
             List<ErroDetalhe> mensagens
-    ) {}
-
+            ) {}
 
     // Representa cada erro encontrado
     public record ErroDetalhe(
             String campo,
             String mensagem
-    ) {}
+            ) {}
 
+    public ResponseEntity<Map<String, Object>> handleNaoEncontrado(RecursoNaoEncontradoException ex) {
+        Map<String, Object> corpo = Map.of(
+                "status", 404,
+                "erro", "Recurso não encontrado",
+                "mensagens", List.of(Map.of("campo", "geral", "mensagem", ex.getMessage()))
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(corpo);
+    }
 }

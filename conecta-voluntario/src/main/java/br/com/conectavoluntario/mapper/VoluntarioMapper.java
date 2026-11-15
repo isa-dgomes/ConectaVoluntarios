@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 
 import br.com.conectavoluntario.dto.response.EnderecoResponse;
 import br.com.conectavoluntario.dto.response.VoluntarioResponse;
-import br.com.conectavoluntario.entity.AreaAtuacao;
 import br.com.conectavoluntario.entity.Voluntario;
 
 @Component
@@ -33,7 +32,7 @@ public class VoluntarioMapper {
 				v.getTelefone(),
 				endereco,
 				v.getAreasDeInteresse().stream()
-					.map(AreaAtuacao::getNomeArea)
+					.map(area -> area.getNomeArea())
 					.collect(Collectors.toSet()),
 				new HashSet<>(v.getDisponibilidade()),
 				new HashSet<>(v.getPeriodo())
