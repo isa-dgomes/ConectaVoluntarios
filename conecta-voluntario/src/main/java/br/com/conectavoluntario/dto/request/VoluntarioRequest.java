@@ -19,7 +19,7 @@ public record VoluntarioRequest(
 		@NotBlank @Size(min = 8, max = 72) String senha,
 		@NotBlank String confirmarSenha,
 		@NotBlank @Size(max = 20) String telefone,
-		@AssertTrue(message = "E necessario aceitar os termos") boolean aceitouTermos,
+		@NotNull @AssertTrue(message = "E necessario aceitar os termos") Boolean aceitouTermos,
 		@NotNull @Valid EnderecoRequest endereco,
 		String habilidades,
 		String experiencia,

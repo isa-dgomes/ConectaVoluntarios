@@ -1,8 +1,8 @@
 package br.com.conectavoluntario.exception;
 
 import java.util.List;
-import java.util.Map;
 
+import org.hibernate.mapping.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -66,12 +66,18 @@ public class GlobalExceptionHandler {
             String mensagem
             ) {}
 
-    public ResponseEntity<Map<String, Object>> handleNaoEncontrado(RecursoNaoEncontradoException ex) {
-        Map<String, Object> corpo = Map.of(
-                "status", 404,
-                "erro", "Recurso não encontrado",
-                "mensagens", List.of(Map.of("campo", "geral", "mensagem", ex.getMessage()))
+    @ExceptionHandler(RecursoNaoEncontradoException.class)
+    public ResponseEntity<ErroResposta> handleNaoEncontrado(
+            RecursoNaoEncontradoException ex) {
+
+        ErroResposta resposta = new ErroResposta(
+                404,
+                "Recurso nao encontrado",
+                List.of(new ErroDetalhe(
+                        "geral",
+                        ex.getMessage()))
         );
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(corpo);
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
     }
 }

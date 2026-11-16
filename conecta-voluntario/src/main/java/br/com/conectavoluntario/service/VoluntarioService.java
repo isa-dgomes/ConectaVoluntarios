@@ -14,6 +14,7 @@ import br.com.conectavoluntario.dto.response.VoluntarioResponse;
 import br.com.conectavoluntario.entity.AreaAtuacao;
 import br.com.conectavoluntario.entity.Endereco;
 import br.com.conectavoluntario.entity.Voluntario;
+import br.com.conectavoluntario.exception.RecursoNaoEncontradoException;
 import br.com.conectavoluntario.exception.RegrasDeNegocioException;
 import br.com.conectavoluntario.mapper.VoluntarioMapper;
 import br.com.conectavoluntario.repository.AreaAtuacaoRepository;
@@ -106,7 +107,7 @@ public class VoluntarioService {
 	public VoluntarioResponse buscarPorId(Long id) {
 
 		Voluntario voluntario = voluntarioRepository.findById(id)
-				.orElseThrow(() -> new RegrasDeNegocioException("Voluntario nao encontrado"));
+				.orElseThrow(() -> new RecursoNaoEncontradoException("Voluntario nao encontrado"));
 
 		return voluntarioMapper.toResponse(voluntario);
 
@@ -114,7 +115,7 @@ public class VoluntarioService {
 
 	public Voluntario buscarEntidadePorId(Long id) {
 		return voluntarioRepository.findById(id)
-				.orElseThrow(() -> new RegrasDeNegocioException("Voluntario nao encontrado"));
+				.orElseThrow(() -> new RecursoNaoEncontradoException("Voluntario nao encontrado"));
 	}
 
 //LISTAR TODOS OS VOLUNTARIOS
@@ -129,7 +130,7 @@ public class VoluntarioService {
 
 	
 //METODDO DE EDITAR
-	@Transactional(readOnly = true)
+	@Transactional
 	public VoluntarioResponse editarVoluntario(Long id, VoluntarioEdicaoRequest req) {
 
 		Voluntario voluntario = buscarEntidadePorId(id);
@@ -152,7 +153,7 @@ public class VoluntarioService {
 
 		List<AreaAtuacao> areas = areaAtuacaoRepository.findAllById(req.areasIds());
 		if (req.areasIds().size() != areas.size()) {
-			throw new RegrasDeNegocioException("Area de atuacao nao encontrada");
+			throw new RecursoNaoEncontradoException("Area de atuacao nao encontrada");
 		}
 
 		Endereco endereco = voluntario.getEndereco();
