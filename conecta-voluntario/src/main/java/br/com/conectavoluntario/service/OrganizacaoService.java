@@ -1,6 +1,7 @@
 package br.com.conectavoluntario.service;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,31 +16,55 @@ import br.com.conectavoluntario.entity.Endereco;
 import br.com.conectavoluntario.entity.Organizacao;
 import br.com.conectavoluntario.exception.RecursoNaoEncontradoException;
 import br.com.conectavoluntario.exception.RegrasDeNegocioException;
-import br.com.conectavoluntario.repository.OportunidadeRepository;
+import br.com.conectavoluntario.mapper.OrganizacaoMapper;
 import br.com.conectavoluntario.repository.OrganizacaoRepository;
 import br.com.conectavoluntario.repository.UsuarioRepository;
 
 @Service
 public class OrganizacaoService {
 
-    private final OrganizacaoRepository organizacaoRepository;
+    private final OrganizacaoRepository repository;
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
+    private final OrganizacaoMapper mapper;
 
-    public OrganizacaoService(OrganizacaoRepository organizacaoRepository,
-            OportunidadeRepository oportunidadeRepository,
+    public OrganizacaoService(
+            OrganizacaoRepository repository,
             UsuarioRepository usuarioRepository,
-            PasswordEncoder passwordEncoder) {
-
-        this.organizacaoRepository = organizacaoRepository;
+            PasswordEncoder passwordEncoder,
+            OrganizacaoMapper mapper) {
+        this.repository = repository;
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
+        this.mapper = mapper;
     }
 
-    //metodo salvar
+    public OrganizacaoResponse criar(OrganizacaoRequest dto) {
+        if (repository.existsByCnpj(dto.cnpj())) {
+            throw new RegrasDeNegocioException("CNPJ já cadastrado");
+        }
+
+        Organizacao org = mapper.ToEntidade(dto);
+        Organizacao salva = repository.save(org);
+        return ToResponse(salva);
+    }
+
+    public List<OrganizacaoResponse> listar() {
+        return repository.findAll()
+                .stream()
+                .map(org -> (OrganizacaoResponse) mapper.ToResponse(org))
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public OrganizacaoResponse buscarPorId(Long id) {
+        Organizacao org = repository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Organização não encontrada"));
+        return ToResponse(org);
+    }
+
     @Transactional
     public OrganizacaoResponse cadastrar(OrganizacaoRequest req) {
-
         if (!req.senha().equals(req.confirmarSenha())) {
             throw new RegrasDeNegocioException("Senhas não conferem");
         }
@@ -50,7 +75,7 @@ public class OrganizacaoService {
             throw new RegrasDeNegocioException("Já existe uma conta com este e-mail");
         }
 
-        if (organizacaoRepository.existsByCnpj(req.cnpj())) {
+        if (repository.existsByCnpj(req.cnpj())) {
             throw new RegrasDeNegocioException("Já existe uma organização com este CNPJ");
         }
 
@@ -75,48 +100,22 @@ public class OrganizacaoService {
                 req.descricao(),
                 req.tipoOrganizacao(),
                 req.responsavel(),
-                null // logo
+                null
         );
 
-        Organizacao salva = organizacaoRepository.save(organizacao);
+        Organizacao salva = repository.save(organizacao);
 
         return ToResponse(salva);
     }
 
-    private OrganizacaoResponse ToResponse(Organizacao o) {
-        Endereco e = o.getEndereco();
-        String enderecoTexto = e.getLogradouro() + ", " + e.getNumero()
-                + " - " + e.getCidade() + "/" + e.getEstado();
-
-        return new OrganizacaoResponse(
-                o.getIdUsuario(),
-                o.getNome(),
-                o.getDescricao(),
-                o.getCnpj(),
-                o.getEmail(),
-                o.getTelefone(),
-                enderecoTexto,
-                null // site: a entidade ainda não tem esse campo
-        );
-    }
-
-    @Transactional(readOnly = true)
-    public OrganizacaoResponse buscarPorId(Long id) {
-        Organizacao organizacao = organizacaoRepository.findById(id)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Organização não encontrada"));
-
-        return ToResponse(organizacao);
-    }
-
     @Transactional(readOnly = true)
     public Page<OrganizacaoResponse> listar(Pageable pageable) {
-        return organizacaoRepository.findAll(pageable).map(this::ToResponse);
+        return repository.findAll(pageable).map(this::ToResponse);
     }
 
-    //metodo atualizar organizacao
     @Transactional
     public OrganizacaoResponse atualizar(Long id, OrganizacaoUpdateRequest req) {
-        Organizacao organizacao = organizacaoRepository.findById(id)
+        Organizacao organizacao = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Organização não encontrada"));
 
         organizacao.setNome(req.nome());
@@ -139,8 +138,25 @@ public class OrganizacaoService {
 
     @Transactional
     public void remover(Long id) {
-        Organizacao organizacao = organizacaoRepository.findById(id)
+        Organizacao organizacao = repository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Organização não encontrada"));
-        organizacaoRepository.delete(organizacao);
+        repository.delete(organizacao);
+    }
+
+    private OrganizacaoResponse ToResponse(Organizacao o) {
+        Endereco e = o.getEndereco();
+        String enderecoTexto = e.getLogradouro() + ", " + e.getNumero()
+                + " - " + e.getCidade() + "/" + e.getEstado();
+
+        return new OrganizacaoResponse(
+                o.getIdUsuario(),
+                o.getNome(),
+                o.getDescricao(),
+                o.getCnpj(),
+                o.getEmail(),
+                o.getTelefone(),
+                enderecoTexto,
+                null
+        );
     }
 }
